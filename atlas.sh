@@ -49,7 +49,7 @@ esac
 install_atlas(){
     # install 55atlas
     mount -o remount,rw /system
-    mount -o remount,rw /system/etc/init.d || true
+    mount -o remount,rw /system/etc/init.d > /dev/null 2>&1 || true
     until $download /system/etc/init.d/55atlas $aconf_download/55atlas || { echo "`date +%Y-%m-%d_%T` Download 55atlas failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
     done
@@ -74,7 +74,7 @@ install_atlas(){
     crond -b
 
     # Remove any old MAD files
-    /system/bin/rm -f /data/local/madromlogs /system/etc/init.d/01madbootstrap /system/etc/init.d/01bootstrap /system/etc/init.d/42mad /system/etc/init.d/16mad /system/bin/update_mad.sh /storage/emulated/0/madversion /system/etc/init.d/41atlas /data/local/tmp/41atlas*.log /sdcard/eMagisk.zip /sdcard/magisk_repackage /sdcard/*gapps*
+    /system/bin/rm -rf /data/local/madromlogs /system/etc/init.d/01madbootstrap /system/etc/init.d/01bootstrap /system/etc/init.d/42mad /system/etc/init.d/16mad /system/bin/update_mad.sh /storage/emulated/0/madversion /system/etc/init.d/41atlas /data/local/tmp/41atlas*.log /sdcard/eMagisk.zip /sdcard/magisk_repackage /sdcard/*gapps*
 
     mount -o remount,ro /system
 
