@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.4.7
+# version 1.4.8
 
 #Version checks
 Ver55atlas="1.0"
@@ -73,10 +73,10 @@ install_atlas(){
     echo "15 * * * * /system/bin/ping_test.sh" > /system/etc/crontabs/root
     crond -b
 
-    mount -o remount,ro /system
-
     # Remove any old MAD files
-    /system/bin/rm -f 01madbootstrap 42mad 16mad
+    /system/bin/rm -f /data/local/madromlogs /system/etc/init.d/01madbootstrap /system/etc/init.d/01bootstrap /system/etc/init.d/42mad /system/etc/init.d/16mad /system/bin/update_mad.sh /storage/emulated/0/madversion /system/etc/init.d/41atlas /data/local/tmp/41atlas*.log /sdcard/eMagisk.zip /sdcard/magisk_repackage /sdcard/*gapps*
+
+    mount -o remount,ro /system
 
     # get version
     aversions=$(/system/bin/grep 'atlas' $aconf_versions | /system/bin/grep -v '_' | awk -F "=" '{ print $NF }')
