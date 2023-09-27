@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.4.8
+# version 1.4.9
 
 #Version checks
 Ver55atlas="1.0"
@@ -92,6 +92,7 @@ install_atlas(){
     /system/bin/pm clear com.nianticlabs.pokemongo
 
     # Install atlas
+    settings put global package_verifier_user_consent -1
     /system/bin/pm install -r /sdcard/Download/atlas.apk
     /system/bin/rm -f /sdcard/Download/atlas.apk
     echo "`date +%Y-%m-%d_%T` atlas installed" >> $logfile
@@ -160,6 +161,7 @@ update_all(){
 
     if [ ! -z "$atlas_install" ] && [ ! -z "$pogo_install" ] ;then
       echo "`date +%Y-%m-%d_%T` All updates checked and downloaded if needed" >> $logfile
+      settings put global package_verifier_user_consent -1
       if [ "$atlas_install" = "install" ] ;then
         echo "`date +%Y-%m-%d_%T` Updating atlas" >> $logfile
         # install atlas
