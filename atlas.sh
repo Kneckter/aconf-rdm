@@ -48,8 +48,6 @@ esac
 
 install_atlas(){
     # install 55atlas
-    mount -o remount,rw /system
-    mount -o remount,rw /system/etc/init.d > /dev/null 2>&1 || true
     until $download /system/etc/init.d/55atlas $aconf_download/55atlas || { echo "`date +%Y-%m-%d_%T` Download 55atlas failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
     done
@@ -72,11 +70,6 @@ install_atlas(){
     touch /system/etc/crontabs/root
     echo "15 * * * * /system/bin/ping_test.sh" > /system/etc/crontabs/root
     crond -b
-
-    # Remove any old MAD files
-    /system/bin/rm -rf /data/local/madromlogs /system/etc/init.d/01madbootstrap /system/etc/init.d/01bootstrap /system/etc/init.d/42mad /system/etc/init.d/16mad /system/bin/update_mad.sh /storage/emulated/0/madversion /system/etc/init.d/41atlas /data/local/tmp/41atlas*.log /sdcard/eMagisk.zip /sdcard/magisk_repackage /sdcard/*gapps*
-
-    mount -o remount,ro /system
 
     # get version
     aversions=$(/system/bin/grep 'atlas' $aconf_versions | /system/bin/grep -v '_' | awk -F "=" '{ print $NF }')
@@ -232,7 +225,6 @@ echo "`date +%Y-%m-%d_%T` Internet connection available" >> $logfile
 
 #download latest atlas.sh
 if [[ $(basename $0) != "atlas_new.sh" ]] ;then
-    mount -o remount,rw /system
     oldsh=$(head -2 /system/bin/atlas.sh | /system/bin/grep '# version' | awk '{ print $NF }')
     until /system/bin/curl -s -k -L --fail --show-error -o /system/bin/atlas_new.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/master/atlas.sh || { echo "`date +%Y-%m-%d_%T` Download atlas.sh failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
@@ -242,7 +234,6 @@ if [[ $(basename $0) != "atlas_new.sh" ]] ;then
     if [[ $oldsh != $newsh ]] ;then
         echo "`date +%Y-%m-%d_%T` atlas.sh $oldsh=>$newsh, restarting script" >> $logfile
         cp /system/bin/atlas_new.sh /system/bin/atlas.sh
-        mount -o remount,ro /system
         /system/bin/atlas_new.sh $@
         exit 1
     fi
@@ -270,12 +261,10 @@ echo "`date +%Y-%m-%d_%T` Downloaded latest versions file"  >> $logfile
 if [[ $(basename $0) = "atlas_new.sh" ]] ;then
     old55=$(head -2 /system/etc/init.d/55atlas | /system/bin/grep '# version' | awk '{ print $NF }')
     if [ $Ver55atlas != $old55 ] ;then
-        mount -o remount,rw /system
         until /system/bin/curl -s -k -L --fail --show-error -o /system/etc/init.d/55atlas https://raw.githubusercontent.com/Kneckter/aconf-rdm/master/55atlas || { echo "`date +%Y-%m-%d_%T` Download 55atlas failed, exit script" >> $logfile ; exit 1; } ;do
             sleep 2
         done
         chmod +x /system/etc/init.d/55atlas
-        mount -o remount,ro /system
         new55=$(head -2 /system/etc/init.d/55atlas | /system/bin/grep '# version' | awk '{ print $NF }')
         echo "`date +%Y-%m-%d_%T` 55atlas $old55=>$new55" >> $logfile
     fi
@@ -285,7 +274,6 @@ fi
 if [[ $(basename $0) = "atlas_new.sh" ]] ;then
     old55=$(head -2 /system/etc/init.d/55cron || echo "# version 0.0" | /system/bin/grep '# version' | awk '{ print $NF }')
     if [ $Ver55cron != $old55 ] ;then
-        mount -o remount,rw /system
         # install 55cron
         until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/master/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
             sleep 2
@@ -302,7 +290,6 @@ if [[ $(basename $0) = "atlas_new.sh" ]] ;then
         touch /system/etc/crontabs/root
         echo "15 * * * * /system/bin/ping_test.sh" > /system/etc/crontabs/root
         crond -b
-        mount -o remount,ro /system
         new55=$(head -2 /system/etc/init.d/55cron | /system/bin/grep '# version' | awk '{ print $NF }')
         echo "`date +%Y-%m-%d_%T` 55cron $old55=>$new55" >> $logfile
     fi
@@ -317,17 +304,13 @@ fi
 # set hostname = origin, wait till next reboot for it to take effect
 if [[ $origin != "" ]] ;then
     if [ $(/system/bin/cat /system/build.prop | /system/bin/grep net.hostname | wc -l) = 0 ]; then
-        mount -o remount,rw /system
         echo "`date +%Y-%m-%d_%T` No hostname set, setting it to $origin" >> $logfile
         echo "net.hostname=$origin" >> /system/build.prop
-        mount -o remount,ro /system
     else
         hostname=$(/system/bin/grep net.hostname /system/build.prop | awk 'BEGIN { FS = "=" } ; { print $2 }')
         if [[ $hostname != $origin ]] ;then
-            mount -o remount,rw /system
             echo "`date +%Y-%m-%d_%T` Changing hostname, from $hostname to $origin" >> $logfile
             /system/bin/sed -i -e "s/^net.hostname=.*/net.hostname=$origin/g" /system/build.prop
-            mount -o remount,ro /system
         fi
     fi
 fi
