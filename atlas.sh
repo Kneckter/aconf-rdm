@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.4.9
+# version 1.5.0
 
 #Version checks
 Ver55atlas="1.0"
@@ -105,6 +105,7 @@ install_atlas(){
     downgrade_pogo
 
     # start atlas
+    /system/bin/am start-foreground-service com.pokemod.atlas/com.pokemod.atlas.services.MappingService
     /system/bin/am startservice com.pokemod.atlas/com.pokemod.atlas.services.MappingService
     sleep 15
 
