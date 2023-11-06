@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.5.0
+# version 1.5.1
 
 #Version checks
 Ver55atlas="1.0"
@@ -172,8 +172,9 @@ update_all(){
       fi
       if [ "$atlas_install" != "install" ] && [ "$pogo_install" != "install" ] ; then
         echo "`date +%Y-%m-%d_%T` Updates checked, nothing to install" >> $logfile
-        am force-stop com.pokemod.atlas
-        am startservice com.pokemod.atlas/com.pokemod.atlas.services.MappingService
+        /system/bin/am force-stop com.pokemod.atlas
+        /system/bin/am start-foreground-service com.pokemod.atlas/com.pokemod.atlas.services.MappingService
+        /system/bin/am startservice com.pokemod.atlas/com.pokemod.atlas.services.MappingService
         echo "`date +%Y-%m-%d_%T` Started Atlas" >> $logfile
       fi
     fi
@@ -319,8 +320,9 @@ fi
 # check atlas config file exists
 if [[ -d /data/data/com.pokemod.atlas ]] && [[ ! -s $aconf ]] ;then
     install_config
-    am force-stop com.pokemod.atlas
-    am startservice com.pokemod.atlas/com.pokemod.atlas.services.MappingService
+    /system/bin/am force-stop com.pokemod.atlas
+    /system/bin/am start-foreground-service com.pokemod.atlas/com.pokemod.atlas.services.MappingService
+    /system/bin/am startservice com.pokemod.atlas/com.pokemod.atlas.services.MappingService
 fi
 
 for i in "$@" ;do
