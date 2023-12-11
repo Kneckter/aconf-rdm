@@ -55,14 +55,14 @@ install_mitm(){
     echo "`date +%Y-%m-%d_%T` 55aconf installed, from egg" >> $logfile
 
     # install 55cron
-    until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
+    until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
     done
     chmod +x /system/etc/init.d/55cron
     echo "`date +%Y-%m-%d_%T` 55cron installed, from egg" >> $logfile
 
     # install cron job
-    until /system/bin/curl -s -k -L --fail --show-error -o  /system/bin/ping_test.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/ping_test.sh || { echo "`date +%Y-%m-%d_%T` Download ping_test.sh failed, exit script" >> $logfile ; exit 1; } ;do
+    until /system/bin/curl -s -k -L --fail --show-error -o  /system/bin/ping_test.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/ping_test.sh || { echo "`date +%Y-%m-%d_%T` Download ping_test.sh failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
     done
     chmod +x /system/bin/ping_test.sh
@@ -187,7 +187,7 @@ echo "`date +%Y-%m-%d_%T` Internet connection available" >> $logfile
 #download latest aconf.sh
 if [[ $(basename $0) != "aconf_new.sh" ]] ;then
     oldsh=$(head -2 /system/bin/aconf.sh | /system/bin/grep '# version' | awk '{ print $NF }')
-    until /system/bin/curl -s -k -L --fail --show-error -o /system/bin/aconf_new.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/aconf.sh || { echo "`date +%Y-%m-%d_%T` Download aconf.sh failed, exit script" >> $logfile ; exit 1; } ;do
+    until /system/bin/curl -s -k -L --fail --show-error -o /system/bin/aconf_new.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/aconf.sh || { echo "`date +%Y-%m-%d_%T` Download aconf.sh failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
     done
     chmod +x /system/bin/aconf_new.sh
@@ -222,7 +222,7 @@ echo "`date +%Y-%m-%d_%T` Downloaded latest aconf_versions file"  >> $logfile
 if [[ $(basename $0) = "aconf_new.sh" ]] ;then
     old55=$(head -2 /system/etc/init.d/55aconf | /system/bin/grep '# version' | awk '{ print $NF }')
     if [ $Ver55aconf != $old55 ] ;then
-        until /system/bin/curl -s -k -L --fail --show-error -o /system/etc/init.d/55aconf https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/55aconf || { echo "`date +%Y-%m-%d_%T` Download 55aconf failed, exit script" >> $logfile ; exit 1; } ;do
+        until /system/bin/curl -s -k -L --fail --show-error -o /system/etc/init.d/55aconf https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/55aconf || { echo "`date +%Y-%m-%d_%T` Download 55aconf failed, exit script" >> $logfile ; exit 1; } ;do
             sleep 2
         done
         chmod +x /system/etc/init.d/55aconf
@@ -236,14 +236,14 @@ if [[ $(basename $0) = "aconf_new.sh" ]] ;then
     old55=$(head -2 /system/etc/init.d/55cron || echo "# version 0.0" | /system/bin/grep '# version' | awk '{ print $NF }')
     if [ $Ver55cron != $old55 ] ;then
         # install 55cron
-        until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
+        until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
             sleep 2
         done
         chmod +x /system/etc/init.d/55cron
         echo "`date +%Y-%m-%d_%T` 55cron installed, from egg" >> $logfile
 
         # install cron job
-        until /system/bin/curl -s -k -L --fail --show-error -o  /system/bin/ping_test.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/egg/ping_test.sh || { echo "`date +%Y-%m-%d_%T` Download ping_test.sh failed, exit script" >> $logfile ; exit 1; } ;do
+        until /system/bin/curl -s -k -L --fail --show-error -o  /system/bin/ping_test.sh https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/ping_test.sh || { echo "`date +%Y-%m-%d_%T` Download ping_test.sh failed, exit script" >> $logfile ; exit 1; } ;do
             sleep 2
         done
         chmod +x /system/bin/ping_test.sh
