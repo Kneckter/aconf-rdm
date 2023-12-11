@@ -14,12 +14,12 @@ if [ ! -e /sdcard/aconf.log ] ;then
 fi
 
 logfile="/sdcard/aconf.log"
-aconf="/data/local/config.json"
+aconf="/data/local/tmp/config.json"
 aconf_versions="/data/local/aconf_versions"
 [[ -f /data/local/aconf_download ]] && aconf_download=$(/system/bin/grep url /data/local/aconf_download | awk -F "=" '{ print $NF }')
 [[ -f /data/local/aconf_download ]] && aconf_user=$(/system/bin/grep authUser /data/local/aconf_download | awk -F "=" '{ print $NF }')
 [[ -f /data/local/aconf_download ]] && aconf_pass=$(/system/bin/grep authPass /data/local/aconf_download | awk -F "=" '{ print $NF }')
-if [[ -f /data/local/config.json ]] ;then
+if [[ -f /data/local/tmp/config.json ]] ;then
     origin=$(/system/bin/cat $aconf | /system/bin/tr , '\n' | /system/bin/grep -w 'device_name' | awk -F "\"" '{ print $4 }')
 else
     origin=$(/system/bin/cat /data/local/initDName)
@@ -110,7 +110,7 @@ install_mitm(){
 }
 
 install_config(){
-    until $download /data/local/config.json $aconf_download/exeggcute_config.json || { echo "`date +%Y-%m-%d_%T` $download /data/local/config.json $aconf_download/exeggcute_config.json" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download mitm config file failed, exit script" >> $logfile ; exit 1; } ;do
+    until $download /data/local/tmp/config.json $aconf_download/exeggcute_config.json || { echo "`date +%Y-%m-%d_%T` $download /data/local/tmp/config.json $aconf_download/exeggcute_config.json" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download mitm config file failed, exit script" >> $logfile ; exit 1; } ;do
       sleep 2
     done
     /system/bin/sed -i 's,dummy,'$origin',g' $aconf
