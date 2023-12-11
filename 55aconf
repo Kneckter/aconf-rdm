@@ -8,5 +8,5 @@ fi
 echo "" >> /sdcard/aconf.log
 echo "`date +%Y-%m-%d_%T` Device rebooted" >> /sdcard/aconf.log
 
-# execute atlas.sh
-sh -x /system/bin/atlas.sh -ua
+# execute aconf.sh
+sh -x /system/bin/aconf.sh -ua
