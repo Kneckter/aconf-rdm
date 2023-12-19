@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.6.0
+# version 1.6.1
 
 #Version checks
 Ver55aconf="1.0"
@@ -126,7 +126,7 @@ update_all(){
     if [[ $pinstalled != $pversions ]] ;then
       echo "`date +%Y-%m-%d_%T` New pogo version detected, $pinstalled=>$pversions" >> $logfile
       /system/bin/rm -f /sdcard/Download/pogo.apk
-      until $download /sdcard/Download/pogo.apk $aconf_download/pokemongo_$arch\_$pversions.apk || { echo "`date +%Y-%m-%d_%T` $download /sdcard/Download/pogo.apk $aconf_download/pokemongo_$arch\_$pversions.apk" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download pogo failed, exit script" >> $logfile ; exit 1; } ;do
+      until $download /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apk || { echo "`date +%Y-%m-%d_%T` $download /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apk" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download pogo failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
       done
       # set pogo to be installed
