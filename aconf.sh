@@ -239,7 +239,7 @@ fi
 
 #update 55cron if needed
 if [[ $(basename $0) = "aconf_new.sh" ]] ;then
-    old55=$(head -2 /system/etc/init.d/55cron || echo "# version 0.0" | /system/bin/grep '# version' | awk '{ print $NF }')
+    old55=$(head -2 /system/etc/init.d/55cron | /system/bin/grep '# version' | awk '{ print $NF }')
     if [ $Ver55cron != $old55 ] ;then
         # install 55cron
         until /system/bin/curl -s -k -L --fail --show-error -o  /system/etc/init.d/55cron https://raw.githubusercontent.com/Kneckter/aconf-rdm/eggs/55cron || { echo "`date +%Y-%m-%d_%T` Download 55cron failed, exit script" >> $logfile ; exit 1; } ;do
