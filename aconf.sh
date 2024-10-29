@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# version 1.6.2
+# version 1.6.3
 
 #Version checks
 Ver55aconf="1.0"
@@ -75,7 +75,7 @@ install_mitm(){
     aversions=$(/system/bin/grep 'mitm' $aconf_versions | /system/bin/grep -v '_' | awk -F "=" '{ print $NF }')
 
     # download mitm
-    /system/bin/rm -f /sdcard/Download/mitm.apk
+    /system/bin/rm -rf /sdcard/Download/mitm.apk
     until $download /sdcard/Download/mitm.apk $aconf_download/com.exeggcute.launcher_$aversions.apk || { echo "`date +%Y-%m-%d_%T` $download /sdcard/Download/mitm.apk $aconf_download/com.exeggcute.launcher_$aversions.apk" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download mitm failed, exit script" >> $logfile ; exit 1; } ;do
       sleep 2
     done
@@ -87,7 +87,7 @@ install_mitm(){
     # Install mitm
     settings put global package_verifier_user_consent -1
     /system/bin/pm install -r /sdcard/Download/mitm.apk
-    /system/bin/rm -f /sdcard/Download/mitm.apk
+    /system/bin/rm -rf /sdcard/Download/mitm.apk
     echo "`date +%Y-%m-%d_%T` mitm installed" >> $logfile
 
     # Grant su access + settings
@@ -118,6 +118,7 @@ install_config(){
 }
 
 update_all(){
+    echo "`date +%Y-%m-%d_%T` Starting the update_all function" >> $logfile
     pinstalled=$(dumpsys package com.nianticlabs.pokemongo | /system/bin/grep versionName | head -n1 | /system/bin/sed 's/ *versionName=//')
     pversions=$(/system/bin/grep 'pogo' $aconf_versions | /system/bin/grep -v '_' | awk -F "=" '{ print $NF }')
     ainstalled=$(dumpsys package com.gocheats.launcher | /system/bin/grep versionName | head -n1 | /system/bin/sed 's/ *versionName=//')
@@ -125,8 +126,8 @@ update_all(){
 
     if [[ $pinstalled != $pversions ]] ;then
       echo "`date +%Y-%m-%d_%T` New pogo version detected, $pinstalled=>$pversions" >> $logfile
-      /system/bin/rm -f /sdcard/Download/pogo.apk
-      until /system/bin/curl -s -k -L --fail --show-error -o /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apk || { echo "`date +%Y-%m-%d_%T` $download /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apk" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download pogo failed, exit script" >> $logfile ; exit 1; } ;do
+      /system/bin/rm -rf /sdcard/Download/pogo.apk /sdcard/Download/pogo_apkm/*
+      until /system/bin/curl -s -k -L --fail --show-error -o /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apkm || { echo "`date +%Y-%m-%d_%T` /system/bin/curl -s -k -L --fail --show-error -o /sdcard/Download/pogo.apk https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_$arch\_$pversions.apkm" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download pogo failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
       done
       # set pogo to be installed
@@ -138,7 +139,7 @@ update_all(){
 
     if [ v$ainstalled != $aversions ] ;then
       echo "`date +%Y-%m-%d_%T` New mitm version detected, $ainstalled=>$aversions" >> $logfile
-      /system/bin/rm -f /sdcard/Download/mitm.apk
+      /system/bin/rm -rf /sdcard/Download/mitm.apk
       until $download /sdcard/Download/mitm.apk $aconf_download/com.exeggcute.launcher_$aversions.apk || { echo "`date +%Y-%m-%d_%T` $download /sdcard/Download/mitm.apk $aconf_download/com.exeggcute.launcher_$aversions.apk" >> $logfile ; echo "`date +%Y-%m-%d_%T` Download mitm failed, exit script" >> $logfile ; exit 1; } ;do
         sleep 2
       done
@@ -156,14 +157,19 @@ update_all(){
         echo "`date +%Y-%m-%d_%T` Updating mitm" >> $logfile
         # install mitm
         /system/bin/pm install -r /sdcard/Download/mitm.apk || { echo "`date +%Y-%m-%d_%T` Install mitm failed, downgrade perhaps? Exit script" >> $logfile ; exit 1; }
-        /system/bin/rm -f /sdcard/Download/mitm.apk
+        /system/bin/rm -rf /sdcard/Download/mitm.apk
         reboot=1
       fi
       if [ "$pogo_install" = "install" ] ;then
         echo "`date +%Y-%m-%d_%T` Updating pogo" >> $logfile
         # install pogo
-        /system/bin/pm install -r /sdcard/Download/pogo.apk || { echo "`date +%Y-%m-%d_%T` Install pogo failed, downgrade perhaps? Exit script" >> $logfile ; exit 1; }
-        /system/bin/rm -f /sdcard/Download/pogo.apk
+#        /system/bin/pm install -r /sdcard/Download/pogo.apk || { echo "`date +%Y-%m-%d_%T` Install pogo failed, downgrade perhaps? Exit script" >> $logfile ; exit 1; }
+#        /system/bin/rm -f /sdcard/Download/pogo.apk
+        mkdir -p /sdcard/Download/pogo_apkm/
+        settings put global verifier_verify_adb_installs 0
+        /vendor/xbin/unzip /sdcard/Download/pogo.apk -d /sdcard/Download/pogo_apkm/
+        /system/bin/pm install -r /sdcard/Download/pogo_apkm/base.apk && /system/bin/pm install -p com.nianticlabs.pokemongo -r /sdcard/Download/pogo_apkm/split_config*.apk
+        /system/bin/rm -rf /sdcard/Download/pogo_apkm/* /sdcard/Download/pogo.apk
         reboot=1
       fi
       if [ "$mitm_install" != "install" ] && [ "$pogo_install" != "install" ] ; then
